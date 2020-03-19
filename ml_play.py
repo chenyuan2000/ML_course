@@ -56,19 +56,19 @@ def ml_loop():
             platform_x = scene_info.platform[0]
             expect_x = 100
             m = (ball_x - last_x) / (ball_y - last_y)
-            if (ball_y > 100 or ball_x == 200):
+            if (ball_y > 100 or ball_x == 200 or ball_x == 0):
                 expect_x = (400 - ball_y) / m + ball_x
             if expect_x > 200:
-                expect_x = expect_x - 200
-            elif expect_x < 0:
+                expect_x = 200 - (expect_x - 200)
+            if expect_x < 0:
                 expect_x = 0 - expect_x
-            else:              
-                if (platform_x+20) < expect_x:
-                    comm.send_instruction(scene_info.frame, PlatformAction.MOVE_RIGHT)
-                elif (platform_x+20) > expect_x:
-                    comm.send_instruction(scene_info.frame, PlatformAction.MOVE_LEFT)
-                else:
-                    comm.send_instruction(scene_info.frame, PlatformAction.NONE)
+
+            if (platform_x+20) < expect_x:
+                comm.send_instruction(scene_info.frame, PlatformAction.MOVE_RIGHT)
+            elif (platform_x+20) > expect_x:
+                comm.send_instruction(scene_info.frame, PlatformAction.MOVE_LEFT)
+            else:
+                comm.send_instruction(scene_info.frame, PlatformAction.NONE)
             last_x = ball_x
             last_y = ball_y
 
