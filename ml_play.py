@@ -29,6 +29,7 @@ def ml_loop():
     # 3. Start an endless loop.
     last_x = 100
     last_y = 400
+    expect_x = 100
     while True:
         # 3.1. Receive the scene information sent from the game process.
         scene_info = comm.get_scene_info()
@@ -54,7 +55,6 @@ def ml_loop():
             ball_x = scene_info.ball[0]
             ball_y = scene_info.ball[1]
             platform_x = scene_info.platform[0]
-            expect_x = 100
             m = (ball_x - last_x) / (ball_y - last_y)
             if (ball_y > 100 or ball_x == 200 or ball_x == 0):
                 expect_x = (400 - ball_y) / m + ball_x
