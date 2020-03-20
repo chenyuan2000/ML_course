@@ -56,7 +56,7 @@ def ml_loop():
             ball_y = scene_info.ball[1]
             platform_x = scene_info.platform[0]
             m = (ball_x - last_x) / (ball_y - last_y)
-            if (ball_y > 100 or ball_x == 200 or ball_x == 0):
+            if ball_y >100:
                 expect_x = (400 - ball_y) / m + ball_x
             if expect_x > 200:
                 expect_x = 200 - (expect_x - 200)
