@@ -32,8 +32,17 @@ def ml_loop(side: str):
     else:
         filename = path.join(path.dirname(__file__), 'save', 'clf_SVMClassification_BallAndDirection_2.pickle')
     with open(filename, 'rb') as file:
-        clf = pickle.load(file)       
+        clf = pickle.load(file) 
 
+    def get_direction(SpeedX, SpeedY):
+        if(SpeedX>=0 and SpeedY>=0):
+            return 0
+        elif(SpeedX>0 and SpeedY<0):
+            return 1
+        elif(SpeedX<0 and SpeedY>0):
+            return 2
+        elif(SpeedX<0 and SpeedY<0):
+            return 3
     # 2. Inform the game process that ml process is ready
     comm.ml_ready()
 
@@ -48,15 +57,17 @@ def ml_loop(side: str):
         feature.append(scene_info['ball_speed'][0])
         feature.append(scene_info['ball_speed'][1])
         feature.append(scene_info['blocker'][0])
-        feature.append(scene_info['blocker'][1])
+        #feature.append(scene_info['blocker'][1])
         feature.append(scene_info['platform_1P'][0])
         #feature.append(scene_info['platform_1P'][1])
         feature.append(scene_info['platform_2P'][0])
         #feature.append(scene_info['platform_2P'][1])
 
+        feature.append(get_direction(feature[2],feature[3]))
+        
         feature = np.array(feature)
         feature = feature.reshape((-1,8))
-        print("test")
+
         # 3.2. If either of two sides wins the game, do the updating or
         #      resetting stuff and inform the game process when the ml process
         #      is ready.
