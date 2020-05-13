@@ -27,13 +27,12 @@ def ml_loop(side: str):
     # === Here is the execution order of the loop === #
     # 1. Put the initialization code here
     ball_served = False
-    filename = path.join(path.dirname(__file__), 'save', 'clf_SVMClassification_BallAndDirection.pickle')
+    if side == "1P":
+        filename = path.join(path.dirname(__file__), 'save', 'clf_SVMClassification_BallAndDirection.pickle')
+    else:
+        filename = path.join(path.dirname(__file__), 'save', 'clf_SVMClassification_BallAndDirection_2.pickle')
     with open(filename, 'rb') as file:
-        clf = pickle.load(file)
-
-    fn = path.join(path.dirname(__file__), 'save', 'clf_SVMClassification_BallAndDirection_2.pickle')
-    with open(fn, 'rb') as f:
-        clf_2 = pickle.load(f)
+        clf = pickle.load(file)       
 
     # 2. Inform the game process that ml process is ready
     comm.ml_ready()
@@ -57,6 +56,7 @@ def ml_loop(side: str):
 
         feature = np.array(feature)
         feature = feature.reshape((-1,8))
+        print("test")
         # 3.2. If either of two sides wins the game, do the updating or
         #      resetting stuff and inform the game process when the ml process
         #      is ready.
@@ -76,19 +76,10 @@ def ml_loop(side: str):
             comm.send_to_game({"frame": scene_info["frame"], "command": "SERVE_TO_LEFT"})
             ball_served = True
         else:
-            if side == "1P":
-                y = clf.predict(feature)
-            else:
-                y = clf_2.predict(feature)
-            print(y)
+            y = clf.predict(feature)
             if y == 0:
                 comm.send_to_game({"frame": scene_info["frame"], "command": "NONE"})
-                print('NONE')
             elif y == 1:                    
                 comm.send_to_game({"frame": scene_info["frame"], "command": "MOVE_LEFT"})
-                print('LEFT')
             elif y == 2:
                 comm.send_to_game({"frame": scene_info["frame"], "command": "MOVE_RIGHT"})
-                print('RIGHT')
-
-            
